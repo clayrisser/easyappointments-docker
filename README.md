@@ -15,7 +15,7 @@ Please &#9733; this repo if you found it useful &#9733; &#9733; &#9733;
 <!------------------------------------------------------->
 
 ```sh
-docker run --name some-mariadb -e MYSQL_ROOT_PASSWORD=hellodocker mariadb:latest
+docker run --name some-mariadb -e MYSQL_ROOT_PASSWORD=hellodocker -e MYSQL_DATABASE=easyappointments mariadb:latest
 docker run --name some-easyappointments -d --link some-mariadb:db -p 8888:8888 jamrizzi/easyappointments:latest
 ```
 

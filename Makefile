@@ -24,8 +24,12 @@ push:
 
 .PHONY: run
 run:
-	@docker run --name $(SOME_CONTAINER) -e DEBUG=true -p 8888:8888 --rm $(IMAGE)
+	@docker run --name $(SOME_CONTAINER) -e DEBUG=true --link some-mariadb:db -p 8888:8888 --rm $(IMAGE)
 	@echo ran $(IMAGE)
+
+.PHONY: database
+database:
+	@docker run --name some-mariadb --rm -it -e MYSQL_ROOT_PASSWORD=hellodocker -e MYSQL_DATABASE=easyappointments mariadb:latest
 
 .PHONY: ssh
 ssh:
