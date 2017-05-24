@@ -19,6 +19,24 @@ docker run --name some-mariadb -e MYSQL_ROOT_PASSWORD=hellodocker -e MYSQL_DATAB
 docker run --name some-easyappointments -d --link some-mariadb:db -p 8888:8888 jamrizzi/easyappointments:latest
 ```
 
+## Usage
+<!------------------------------------------------------->
+
+| Environment Variable | Deafult Value         |
+| -------------------- | --------------------- |
+| BASE_URL             | http://localhost:8888 |
+| LANGUAGE             | english               |
+| DEBUG                | false                 |
+| DB_HOST              | db                    |
+| DB_NAME              | easyappointments      |
+| DB_USERNAME          | root                  |
+| DB_PASSWORD          | hellodocker           |
+| GOOGLE_SYNC_FEATURE  | false                 |
+| GOOGLE_PRODUCT_NAME  | ""                    |
+| GOOGLE_CLIENT_ID     | ""                    |
+| GOOGLE_CLIENT_SECRET | ""                    |
+| GOOGLE_API_KEY       | ""                    |
+
 
 ## Dependencies
 <!------------------------------------------------------->
