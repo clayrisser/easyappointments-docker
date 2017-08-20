@@ -6,13 +6,13 @@ Please &#9733; this repo if you found it useful &#9733; &#9733; &#9733;
 
 
 ## Features
-<!------------------------------------------------------->
 
 * Change settings with environment variables
+* Sync with Google Calendar
+* Set timezone
 
 
 ## Installation
-<!------------------------------------------------------->
 
 ```sh
 docker run --name some-mariadb -e MYSQL_ROOT_PASSWORD=hellodocker -e MYSQL_DATABASE=easyappointments mariadb:latest
@@ -20,46 +20,42 @@ docker run --name some-easyappointments -d --link some-mariadb:db -p 8888:8888 j
 ```
 
 ## Usage
-<!------------------------------------------------------->
 
-| Environment Variable | Deafult Value         |
-| -------------------- | --------------------- |
-| BASE_URL             | http://localhost:8888 |
-| LANGUAGE             | english               |
-| DEBUG                | false                 |
-| DB_HOST              | db                    |
-| DB_NAME              | easyappointments      |
-| DB_USERNAME          | root                  |
-| DB_PASSWORD          | hellodocker           |
-| GOOGLE_SYNC_FEATURE  | false                 |
-| GOOGLE_PRODUCT_NAME  | ""                    |
-| GOOGLE_CLIENT_ID     | ""                    |
-| GOOGLE_CLIENT_SECRET | ""                    |
-| GOOGLE_API_KEY       | ""                    |
+| Environment Variable | Deafult Value           |
+| -------------------- | ----------------------- |
+| BASE_URL             | "http://localhost:8888" |
+| LANGUAGE             | "english"               |
+| DEBUG                | false                   |
+| DB_HOST              | "db"                    |
+| DB_NAME              | "easyappointments"      |
+| DB_USERNAME          | "root"                  |
+| DB_PASSWORD          | "hellodocker"           |
+| GOOGLE_SYNC_FEATURE  | false                   |
+| GOOGLE_PRODUCT_NAME  | ""                      |
+| GOOGLE_CLIENT_ID     | ""                      |
+| GOOGLE_CLIENT_SECRET | ""                      |
+| GOOGLE_API_KEY       | ""                      |
+| TZ                   | "UTC"                   |
 
 
 ## Dependencies
-<!------------------------------------------------------->
 
 * [Docker](https://www.docker.com/)
 
 
 ## Support
-<!------------------------------------------------------->
 
-Submit an [issue](https://github.com/jamrizzi/readme/issues/new)
+Submit an [issue](https://github.com/jamrizzi/easyappointments-docker/issues/new)
 
 
 ## Buy Me Coffee
-<!------------------------------------------------------->
 
 A ridiculous amount of coffee was consumed in the process of building this project.
 
-[Add some fuel](https://jamrizzi.com/#!/buy-me-coffee) if you'd like to keep me going!
+[Add some fuel](https://pay.jamrizzi.com) if you'd like to keep me going!
 
 
 ## Contributing
-<!------------------------------------------------------->
 
 1. Fork it!
 2. Create your feature branch: `git checkout -b my-new-feature`
@@ -69,7 +65,6 @@ A ridiculous amount of coffee was consumed in the process of building this proje
 
 
 ## License
-<!------------------------------------------------------->
 
 [MIT License](https://github.com/jamrizzi/easyappointments-docker/blob/master/LICENSE)
 
@@ -77,13 +72,15 @@ A ridiculous amount of coffee was consumed in the process of building this proje
 
 
 ## Credits
-<!------------------------------------------------------->
 
 * [Jam Risser](https://jamrizzi.com) - Author
 
 
 ## Changelog
-<!------------------------------------------------------->
+
+0.1.0 (2017-08-20)
+* Beta version
+* Fixed timezone bug
 
 0.0.1 (2017-05-11)
 * Initial release
