@@ -20,7 +20,6 @@ def set_timezone():
     with open('/etc/php7/php.ini', 'w') as f:
         f.writelines(lines)
 
-
 def init_config(config_file):
     lines = list()
     with open(config_file) as f:
