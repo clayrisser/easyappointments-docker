@@ -19,19 +19,25 @@ ENV GOOGLE_PRODUCT_NAME=""
 ENV GOOGLE_CLIENT_ID=""
 ENV GOOGLE_CLIENT_SECRET=""
 ENV GOOGLE_API_KEY=""
+ENV TZ="UTC"
 
 EXPOSE 8888
 
 WORKDIR /app/www/
 
-RUN apk add --no-cache php7-ctype \
-    php7-session
+RUN apk add --no-cache \
+        php7-ctype \
+        php7-curl \
+        php7-session \
+        tzdata
 
 ADD https://github.com/alextselegidis/easyappointments/releases/download/1.2.0/easyappointments_1.2.0.zip /app/www/
 
 RUN unzip -o /app/www/easyappointments_1.2.0.zip && \
-    rm easyappointments_1.2.0.zip && \
-    sed -i "s/\$config\['sess_save_path']          = NULL;/\$config\['sess_save_path']          = sys_get_temp_dir();/g" /app/www/application/config/config.php
+    rm easyappointments_1.2.0.zip
+COPY ./patch.sh /app/.tmp/patch.sh
 COPY ./app/ /app/
+RUN sh /app/.tmp/patch.sh && \
+    rm -rf /app/.tmp/
 
 ENTRYPOINT ["/sbin/tini", "--", "python", "/app/run.py"]

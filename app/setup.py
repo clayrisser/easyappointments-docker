@@ -5,8 +5,22 @@ import re
 import sys
 
 def main(argv):
-    lines = []
-    with open(argv[len(argv) - 1]) as f:
+    set_timezone()
+    init_config(argv[len(argv) - 1])
+
+def set_timezone():
+    lines = list()
+    with open('/etc/php7/php.ini', 'r+') as f:
+        for line in f.readlines():
+            if ';date.timezone' in line:
+                lines.append('date.timezone = ' + os.environ['TZ'] + '\n')
+            else:
+                lines.append(line)
+        f.writelines(lines)
+
+def init_config(config_file):
+    lines = list()
+    with open(config_file, 'r+') as f:
         for line in f.readlines():
             for match in re.findall(r'\$\{.+\}', line):
                 env_name = re.findall(r'(?<=\$\{).+(?=\})', match)[0]
@@ -17,8 +31,6 @@ def main(argv):
                     env = env.lower()
                 line = line.replace(match, env)
             lines.append(line)
-
-    for line in lines:
-        print(line)
+        f.writelines(lines)
 
 main(sys.argv)
