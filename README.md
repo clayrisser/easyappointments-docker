@@ -31,10 +31,10 @@ docker run --name some-easyappointments -d --link some-mariadb:db -p 8888:8888 j
 | DB_USERNAME          | "root"                  |
 | DB_PASSWORD          | "hellodocker"           |
 | GOOGLE_SYNC_FEATURE  | false                   |
-| GOOGLE_PRODUCT_NAME  | ""                      |
-| GOOGLE_CLIENT_ID     | ""                      |
-| GOOGLE_CLIENT_SECRET | ""                      |
-| GOOGLE_API_KEY       | ""                      |
+| GOOGLE_PRODUCT_NAME  |                         |
+| GOOGLE_CLIENT_ID     |                         |
+| GOOGLE_CLIENT_SECRET |                         |
+| GOOGLE_API_KEY       |                         |
 | TZ                   | "UTC"                   |
 
 
