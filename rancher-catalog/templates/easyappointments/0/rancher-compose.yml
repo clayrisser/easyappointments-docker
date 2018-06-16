@@ -3,7 +3,7 @@ version: '2'
 catalog:
   name: 'Easy!Appointments'
   version: 0.1.0
-  description: 'Open source web scheduler'
+  description: 'Open source appointment scheduler'
   questions:
     - variable: base_url
       label: 'Base URL'

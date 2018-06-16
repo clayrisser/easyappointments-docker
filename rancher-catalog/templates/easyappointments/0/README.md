@@ -1,3 +1,3 @@
 # Easy!Appointments
 
-> Open source web scheduler
+> Open source appointment scheduler
