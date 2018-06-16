@@ -1,0 +1,39 @@
+version: '2'
+
+services:
+  easyappointments:
+    image: codejamninja/easyappointments:${version}
+{{- if (.Values.public_port)}}
+    ports:
+      - ${public_port}:8888
+{{- end}}
+{{- if not (.Values.mysql_host)}}
+    links:
+      - mysql:db
+{{- end }}
+    environment:
+      BASE_URL: ${base_url}
+      DB_NAME: ${mysql_database}
+      DB_PASSWORD: ${mysql_password}
+      DB_USERNAME: ${mysql_user}
+{{- if (.Values.mysql_host)}}
+      DB_HOST: ${mysql_host}
+{{- end}}
+      TZ: ${timezone}
+    labels:
+      io.rancher.container.hostname_override: container_name
+
+{{- if not (.Values.mysql_host)}}
+  mysql:
+    image: mariadb:10.3.7
+    environment:
+      MYSQL_DATABASE: ${mysql_database}
+      MYSQL_USER: ${mysql_user}
+      MYSQL_PASSWORD: ${mysql_password}
+      MYSQL_RANDOM_ROOT_PASSWORD: true
+    volume_driver: ${volume_driver}
+    volumes:
+      - {{.Stack.Name}}--mysql-data:/var/lib/mysql
+    labels:
+      io.rancher.container.hostname_override: container_name
+{{- end}}

@@ -1,0 +1,75 @@
+version: '2'
+
+catalog:
+  name: 'Easy!Appointments'
+  version: 0.1.0
+  description: 'Open source web scheduler'
+  questions:
+    - variable: base_url
+      label: 'Base URL'
+      type: string
+      required: true
+    - variable: timezone
+      label: Timezone
+      type: string
+      default: UTC
+      required: true
+    - variable: version
+      label: Version
+      type: enum
+      default: 1.3.0
+      options:
+        - 1.3.0
+        - 1.3
+        - 1
+        - 1.2.0
+        - 1.2
+        - latest
+    - variable: mysql_host
+      label: 'Mysql Host'
+      description: 'Leave empty to spin up a mysql docker container'
+      type: string
+      required: false
+    - variable: mysql_user
+      label: 'Mysql User'
+      type: string
+      default: easyappointments
+      required: true
+    - variable: mysql_password
+      label: 'Mysql Password'
+      type: password
+      required: true
+    - variable: mysql_database
+      label: 'Mysql Database'
+      type: string
+      default: easyappointments
+      required: true
+    - variable: volume_driver
+      label: 'Volume Driver'
+      required: true
+      default: rancher-nfs
+      type: enum
+      options:
+        - rancher-nfs
+        - rancher-efs
+        - rancher-ebs
+        - local
+    - variable: public_port
+      label: 'Public Port'
+      description: 'Leave empty if you do not want an exposed port'
+      type: string
+      required: false
+
+services:
+  easyappointments:
+    scale: 1
+    start_on_create: true
+    health_check:
+      drain_timeout_ms: 10000
+      healthy_threshold: 2
+      interval: 2000
+      port: 8888
+      request_line: GET / HTTP/1.0
+      response_timeout: 2000
+      strategy: recreate
+      unhealthy_threshold: 3
