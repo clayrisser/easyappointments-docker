@@ -31,10 +31,10 @@ RUN apk add --no-cache \
         php7-session \
         tzdata
 
-ADD https://github.com/alextselegidis/easyappointments/releases/download/1.3.0/easyappointments_1.3.0.zip /app/www/
+ADD https://github.com/alextselegidis/easyappointments/releases/download/1.4.1/easyappointments-1.4.1.zip /app/www/
 
-RUN unzip -o /app/www/easyappointments_1.3.0.zip && \
-    rm easyappointments_1.3.0.zip
+RUN unzip -o /app/www/easyappointments-1.4.1.zip && \
+    rm easyappointments-1.4.1.zip
 COPY ./patch.sh /app/.tmp/patch.sh
 COPY ./app/ /app/
 RUN sh /app/.tmp/patch.sh && \
