@@ -1,0 +1,4 @@
+.make/
+.env
+.env.bak
+.dockerignore
