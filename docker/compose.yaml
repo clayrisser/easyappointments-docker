@@ -1,0 +1,43 @@
+services:
+  easyappointments:
+    image: ${DOCKER_REGISTRY:-registry.gitlab.com/bitspur/rock8s/easyappointments-docker}/easyappointments:${DOCKER_TAG:-latest}
+    ports:
+      - ${EASYAPPOINTMENTS_PORT:-8888}:80
+    environment:
+      BASE_URL: ${BASE_URL:-http://localhost:8888}
+      LANGUAGE: ${LANGUAGE:-english}
+      DEBUG_MODE: ${DEBUG_MODE:-false}
+      DB_HOST: mariadb
+      DB_NAME: easyappointments
+      DB_USERNAME: easyappointments
+      DB_PASSWORD: ${DB_PASSWORD:-easyappointments}
+      TZ: ${TZ:-UTC}
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  mariadb:
+    image: mariadb:11.8
+    environment:
+      MARIADB_DATABASE: easyappointments
+      MARIADB_USER: easyappointments
+      MARIADB_PASSWORD: ${DB_PASSWORD:-easyappointments}
+      MARIADB_RANDOM_ROOT_PASSWORD: "1"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+      # First boot has to initialise the data directory before it can answer a
+      # health check. Without a start_period those early failures count against
+      # `retries`, so the container is declared unhealthy — and every dependent
+      # with `condition: service_healthy` is abandoned — while the database is
+      # still perfectly well starting up. Failures inside the start period do
+      # not count, and the period ends the moment a check first succeeds, so
+      # this costs nothing when initialisation is quick.
+      start_period: 120s
+
+volumes:
+  mariadb-data:

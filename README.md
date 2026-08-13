@@ -1,87 +1,99 @@
-# Easy!Appointments Docker
+# easyappointments-docker
 
-A docker image for Easy!Appointments
+A Docker image for [Easy!Appointments](https://easyappointments.org), the open
+source appointment scheduler.
 
-Please &#9733; this repo if you found it useful &#9733; &#9733; &#9733;
+The image bundles Easy!Appointments 1.6.0 on PHP 8.4 (Apache) and configures
+itself from environment variables, so the same image works in compose,
+Kubernetes, or plain `docker run`.
 
-![](assets/easy-appointments-docker.png)
+The `config.php` written at container start is a fixed file that reads those
+variables at runtime; no value is ever substituted into it. That keeps
+environment content out of the PHP parser entirely — a password containing a
+quote is just a password — and means the generated file holds no secrets.
 
-## Features
-
-* Change settings with environment variables
-* Sync with Google Calendar
-* Set timezone
-
-
-## Installation
+## Quick start
 
 ```sh
-docker run --name some-mariadb -e MYSQL_ROOT_PASSWORD=hellodocker -e MYSQL_DATABASE=easyappointments mariadb:latest
-docker run --name some-easyappointments -d --link some-mariadb:db -p 8888:8888 jamrizzi/easyappointments:latest
+make build   # build the image with buildx bake
+make up      # start the app + mariadb via compose
 ```
 
-## Usage
+Then open http://localhost:8888 and follow the installation wizard.
 
-| Environment Variable | Deafult Value           |
+Copy `.env.example` to `.env` (done automatically on first `make` run) to
+override the port, base URL, or database password.
+
+## Environment variables
+
+| Variable             | Default                 |
 | -------------------- | ----------------------- |
-| BASE_URL             | "http://localhost:8888" |
-| LANGUAGE             | "english"               |
-| DEBUG                | false                   |
-| DB_HOST              | "db"                    |
-| DB_NAME              | "easyappointments"      |
-| DB_USERNAME          | "root"                  |
-| DB_PASSWORD          | "hellodocker"           |
-| GOOGLE_SYNC_FEATURE  | false                   |
-| GOOGLE_PRODUCT_NAME  |                         |
+| BASE_URL             | `http://localhost`      |
+| LANGUAGE             | `english`               |
+| DEBUG_MODE           | `false`                 |
+| DB_HOST              | `mariadb`               |
+| DB_NAME              | `easyappointments`      |
+| DB_USERNAME          | `easyappointments`      |
+| DB_PASSWORD          | `easyappointments`      |
+| GOOGLE_SYNC_FEATURE  | `false`                 |
 | GOOGLE_CLIENT_ID     |                         |
 | GOOGLE_CLIENT_SECRET |                         |
-| GOOGLE_API_KEY       |                         |
-| TZ                   | "UTC"                   |
+| TZ                   | `UTC`                   |
 
+`DEBUG` is accepted as a legacy alias for `DEBUG_MODE`. `TZ` must be a plain
+zone identifier (`America/New_York`, `Etc/GMT+5`, `UTC`); anything else is
+rejected with a warning and `UTC` is used, because that value is written into
+a `php.ini` fragment.
 
-## Dependencies
+## Make targets
 
-* [Docker](https://www.docker.com/)
+| Target        | Description                                        |
+| ------------- | -------------------------------------------------- |
+| `build`       | Build the image via `docker buildx bake`           |
+| `up` / `up-d` | Start the stack (foreground / detached)            |
+| `down`        | Stop the stack and remove volumes                  |
+| `logs`        | Tail the stack logs                                |
+| `ps`          | Show stack status                                  |
+| `test/e2e`    | Run the bats smoke test suite                      |
+| `format`      | Format shell scripts with shfmt                    |
+| `lint`        | Check shell script formatting                      |
+| `prepare`     | Install the toolchain (asdf, bats, shfmt, cloc)    |
+| `clean`       | Remove generated Make state                        |
+| `purge`       | `clean` + remove everything not tracked by git     |
 
+## Publishing
 
-## Support
+Images are tagged `${DOCKER_REGISTRY}/easyappointments` with `latest`, the git
+commit, and the Easy!Appointments version. `DOCKER_REGISTRY` defaults to
+`registry.gitlab.com/bitspur/rock8s/easyappointments-docker`.
 
-Submit an [issue](https://github.com/jamrizzi/easyappointments-docker/issues/new)
+Multi-arch (linux/amd64 + linux/arm64) publishing:
 
+```sh
+make build BAKE_OUTPUT=registry
+```
 
-## Buy Me Coffee
+Local builds produce a single image for the host architecture (works on both
+amd64 and arm64/Apple Silicon hosts — the base images are multi-arch).
 
-A ridiculous amount of coffee was consumed in the process of building this project.
+## Upgrading Easy!Appointments
 
-[Add some fuel](https://pay.jamrizzi.com) if you'd like to keep me going!
+Bump `EASYAPPOINTMENTS_VERSION` in `make.mk` and rebuild. Existing
+installations must run the database migrations after upgrading — see the
+[upstream update guide](https://easyappointments.org/docs.html).
 
+## Tests
 
-## Contributing
+```sh
+make test/e2e
+```
 
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
-
+Builds the image, brings the stack up with a throwaway database, and asserts
+the app serves HTTP 200 and can reach the database. A second file covers
+`config.php` generation, including that hostile environment values stay data:
+the generated file is byte-identical whatever the environment holds. Set
+`KEEP_STACK=1` to leave the stack running after the suite for inspection.
 
 ## License
 
-[MIT License](https://github.com/jamrizzi/easyappointments-docker/blob/master/LICENSE)
-
-[Jam Risser](https://jamrizzi.com) &copy; 2017
-
-
-## Credits
-
-* [Jam Risser](https://jamrizzi.com) - Author
-
-
-## Changelog
-
-0.1.0 (2017-08-20)
-* Beta version
-* Fixed timezone bug
-
-0.0.1 (2017-05-11)
-* Initial release
+[MIT License](LICENSE)
