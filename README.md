@@ -3,9 +3,14 @@
 A Docker image for [Easy!Appointments](https://easyappointments.org), the open
 source appointment scheduler.
 
-The image bundles Easy!Appointments 1.6.0 on PHP 8.4 (Apache) and renders
-`config.php` from environment variables at container start, so the same image
-works in compose, Kubernetes, or plain `docker run`.
+The image bundles Easy!Appointments 1.6.0 on PHP 8.4 (Apache) and configures
+itself from environment variables, so the same image works in compose,
+Kubernetes, or plain `docker run`.
+
+The `config.php` written at container start is a fixed file that reads those
+variables at runtime; no value is ever substituted into it. That keeps
+environment content out of the PHP parser entirely — a password containing a
+quote is just a password — and means the generated file holds no secrets.
 
 ## Quick start
 
@@ -35,7 +40,10 @@ override the port, base URL, or database password.
 | GOOGLE_CLIENT_SECRET |                         |
 | TZ                   | `UTC`                   |
 
-`DEBUG` is accepted as a legacy alias for `DEBUG_MODE`.
+`DEBUG` is accepted as a legacy alias for `DEBUG_MODE`. `TZ` must be a plain
+zone identifier (`America/New_York`, `Etc/GMT+5`, `UTC`); anything else is
+rejected with a warning and `UTC` is used, because that value is written into
+a `php.ini` fragment.
 
 ## Make targets
 
@@ -81,8 +89,10 @@ make test/e2e
 ```
 
 Builds the image, brings the stack up with a throwaway database, and asserts
-the app serves HTTP 200 and can reach the database. Set `KEEP_STACK=1` to
-leave the stack running after the suite for inspection.
+the app serves HTTP 200 and can reach the database. A second file covers
+`config.php` generation, including that hostile environment values stay data:
+the generated file is byte-identical whatever the environment holds. Set
+`KEEP_STACK=1` to leave the stack running after the suite for inspection.
 
 ## License
 

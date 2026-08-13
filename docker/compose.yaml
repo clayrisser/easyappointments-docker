@@ -30,6 +30,14 @@ services:
       interval: 5s
       timeout: 5s
       retries: 12
+      # First boot has to initialise the data directory before it can answer a
+      # health check. Without a start_period those early failures count against
+      # `retries`, so the container is declared unhealthy — and every dependent
+      # with `condition: service_healthy` is abandoned — while the database is
+      # still perfectly well starting up. Failures inside the start period do
+      # not count, and the period ends the moment a check first succeeds, so
+      # this costs nothing when initialisation is quick.
+      start_period: 120s
 
 volumes:
   mariadb-data:
